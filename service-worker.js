@@ -1,4 +1,4 @@
-const CACHE = 'mylibrary-v3';
+const CACHE = 'mylibrary-v4';
 
 const PRECACHE = [
   './',
@@ -51,8 +51,9 @@ self.addEventListener('fetch', event => {
   const req = event.request;
   if (req.method !== 'GET') return;
 
-  // Always go to network for Google APIs (search needs fresh data)
+  // Always go to network for external APIs (search needs fresh data)
   if (req.url.includes('googleapis.com')) return;
+  if (req.url.includes('openlibrary.org')) return;
 
   // Network-first for navigations so app updates show promptly
   if (req.mode === 'navigate') {

@@ -90,8 +90,8 @@ async function handleCode(isbn) {
     // keep scanning for the next book — common to add several in a row
     setStatus(`✅ "${saved.title}" aggiunto! Inquadra il prossimo.`, false, true);
     setTimeout(() => { scanning = true; }, 1200);
-  } catch {
-    setStatus('⚠️ Errore di rete. Controlla la connessione.', true);
+  } catch (err) {
+    setStatus(`⚠️ ${err?.message || 'Errore di rete'}. Riprova.`, true);
     setTimeout(() => { scanning = true; setStatus('Inquadra un altro codice…'); }, 2200);
   }
 }

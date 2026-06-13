@@ -96,8 +96,8 @@ async function runSearch(query, statusEl, resultsEl) {
       return;
     }
     renderResults(results, resultsEl);
-  } catch {
-    statusEl.innerHTML = emptyBlock('⚠️', 'Errore di rete. Controlla la connessione.');
+  } catch (err) {
+    statusEl.innerHTML = emptyBlock('⚠️', err?.message || 'Errore di rete. Controlla la connessione.');
   }
 }
 
