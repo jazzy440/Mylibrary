@@ -2,21 +2,23 @@
   "name": "My Library",
   "short_name": "MyLibrary",
   "description": "La tua libreria personale di libri fisici",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0f0f17",
-  "theme_color": "#7c6af0",
+  "theme_color": "#0f0f17",
   "orientation": "portrait-primary",
   "lang": "it",
+  "categories": ["books", "productivity", "lifestyle"],
   "icons": [
     {
-      "src": "/icons/icon.svg",
+      "src": "./icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-maskable.svg",
+      "src": "./icons/icon-maskable.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"

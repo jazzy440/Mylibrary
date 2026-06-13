@@ -1,5 +1,12 @@
 import { deleteBook, updateBook } from '../db.js';
 import { showToast } from './toast.js';
+import { createRating, ratingHTML } from './rating.js';
+
+const STATUS = {
+  unread:  { label: 'Da leggere', icon: '○', cls: 'status-unread' },
+  reading: { label: 'In lettura', icon: '◐', cls: 'status-reading' },
+  read:    { label: 'Letto',      icon: '●', cls: 'status-read' },
+};
 
 let backdrop, sheet, titleEl, contentEl, actionsEl;
 let current = null;
@@ -38,6 +45,7 @@ export function closeSheet() {
 /* ---- Detail ---- */
 function renderDetail() {
   const b = current;
+  const st = STATUS[b.status] || STATUS.unread;
 
   contentEl.innerHTML = `
     <div class="book-detail-hero">
@@ -45,22 +53,65 @@ function renderDetail() {
       <div class="book-detail-headline">
         <div class="book-detail-title">${esc(b.title)}</div>
         <div class="book-detail-author">${esc(b.author || '—')}</div>
+        ${ratingHTML(b.rating)}
         <div class="book-detail-tags">
           ${b.genre    ? `<span class="chip chip-primary">${esc(b.genre)}</span>` : ''}
           ${b.language ? `<span class="chip chip-surface">${esc(b.language)}</span>` : ''}
+          ${b.wishlist ? `<span class="chip chip-wish">★ Desideri</span>` : ''}
         </div>
       </div>
     </div>
+
+    <div class="status-selector" id="status-selector">
+      ${Object.entries(STATUS).map(([key, s]) => `
+        <button class="status-pill ${s.cls}${b.status === key ? ' active' : ''}" data-status="${key}">
+          <span class="status-icon">${s.icon}</span>${s.label}
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="rating-row">
+      <span class="rating-label">La tua valutazione</span>
+      <span id="rating-mount"></span>
+    </div>
+
     ${metaGrid(b)}
-    ${b.notes ? `<div class="notes-box"><div class="notes-box-label">Note</div><p>${esc(b.notes)}</p></div>` : ''}
+    ${b.description ? `<div class="notes-box"><div class="notes-box-label">Descrizione</div><p>${esc(b.description)}</p></div>` : ''}
+    ${b.notes ? `<div class="notes-box"><div class="notes-box-label">Note personali</div><p>${esc(b.notes)}</p></div>` : ''}
   `;
 
+  // Status pills
+  contentEl.querySelectorAll('.status-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const status = pill.dataset.status;
+      current = updateBook(current.id, { status });
+      contentEl.querySelectorAll('.status-pill').forEach(p =>
+        p.classList.toggle('active', p.dataset.status === status));
+      onChanged?.();
+    });
+  });
+
+  // Inline rating
+  const ratingMount = contentEl.querySelector('#rating-mount');
+  ratingMount.appendChild(createRating(b.rating || 0, (val) => {
+    current = updateBook(current.id, { rating: val });
+    onChanged?.();
+  }));
+
+  // Actions
   actionsEl.innerHTML = '';
   const delBtn  = btn('btn-ghost', 'Elimina');
+  const wishBtn = btn('btn-ghost', b.wishlist ? '★ Nei desideri' : '☆ Desideri');
   const editBtn = btn('btn-primary', 'Modifica', 'flex:1');
   delBtn.addEventListener('click', showDeleteConfirm);
+  wishBtn.addEventListener('click', () => {
+    current = updateBook(current.id, { wishlist: !current.wishlist });
+    showToast(current.wishlist ? 'Aggiunto ai desideri' : 'Rimosso dai desideri');
+    renderDetail();
+    onChanged?.();
+  });
   editBtn.addEventListener('click', renderEdit);
-  actionsEl.append(delBtn, editBtn);
+  actionsEl.append(delBtn, wishBtn, editBtn);
 }
 
 function showDeleteConfirm() {
@@ -74,6 +125,7 @@ function showDeleteConfirm() {
     </div>
   `;
   contentEl.prepend(box);
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   box.querySelector('#del-cancel').addEventListener('click', () => box.remove());
   box.querySelector('#del-ok').addEventListener('click', () => {
     deleteBook(current.id);
@@ -141,6 +193,10 @@ export function buildForm(b = {}) {
         </div>
       </div>
       <div class="form-group">
+        <label class="label">ISBN</label>
+        <input id="f-isbn" type="text" value="${esc(b.isbn || '')}" placeholder="978…">
+      </div>
+      <div class="form-group">
         <label class="label">URL Copertina</label>
         <input id="f-cover" type="url" value="${esc(b.cover || '')}" placeholder="https://...">
       </div>
@@ -161,6 +217,7 @@ export function readForm() {
     publisher: document.getElementById('f-publisher').value.trim(),
     genre:     document.getElementById('f-genre').value.trim(),
     language:  document.getElementById('f-language').value.trim(),
+    isbn:      document.getElementById('f-isbn').value.trim(),
     cover:     document.getElementById('f-cover').value.trim(),
     notes:     document.getElementById('f-notes').value.trim(),
   };
@@ -186,6 +243,7 @@ function metaGrid(b) {
   const pairs = [
     ['Anno', b.year], ['Pagine', b.pages],
     ['Editore', b.publisher], ['Lingua', b.language],
+    ['ISBN', b.isbn],
   ].filter(([, v]) => v);
   if (!pairs.length) return '';
   return `<div class="meta-list">${pairs.map(([l, v]) =>
