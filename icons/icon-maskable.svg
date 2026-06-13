@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Full square background (no rounded corners — maskable safe zone) -->
+  <rect width="512" height="512" fill="#7c6af0"/>
+
+  <!-- Open book (centered within 80% safe zone = 204px inset on each side) -->
+  <rect x="245" y="148" width="22" height="220" rx="5" fill="#fff" opacity="0.95"/>
+  <path d="M241 158 C194 158 128 172 100 194 L100 362 C128 346 194 336 241 342 Z"
+        fill="#fff" opacity="0.92"/>
+  <path d="M267 158 C314 158 380 172 408 194 L408 362 C380 346 314 336 267 342 Z"
+        fill="#fff" opacity="0.78"/>
+  <line x1="118" y1="220" x2="236" y2="214" stroke="#7c6af0" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+  <line x1="118" y1="246" x2="236" y2="242" stroke="#7c6af0" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+  <line x1="118" y1="272" x2="236" y2="270" stroke="#7c6af0" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+  <line x1="118" y1="298" x2="236" y2="298" stroke="#7c6af0" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+  <line x1="118" y1="324" x2="200" y2="324" stroke="#7c6af0" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+</svg>
