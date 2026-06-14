@@ -133,13 +133,86 @@
   color: var(--accent);
 }
 
-/* ===== BOOK GRID ===== */
+/* ===== BOOK GRID (legacy, kept for book-card fallback) ===== */
 .book-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   padding: 16px;
 }
+
+/* ===== BOOK LIST ===== */
+#book-list {
+  padding-bottom: 80px;
+}
+
+.book-list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.12s;
+}
+
+.book-list-item:active { background: var(--surface); }
+
+.book-list-cover {
+  width: 44px;
+  height: 66px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: var(--surface-2);
+  flex-shrink: 0;
+  display: block;
+}
+
+.book-list-placeholder {
+  width: 44px;
+  height: 66px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.book-list-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.book-list-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+  color: var(--text-1);
+}
+
+.book-list-author {
+  font-size: 0.78rem;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-list-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-read    { background: var(--success); }
+.dot-reading { background: var(--primary); }
 
 /* ===== BOOK CARD ===== */
 .book-card {

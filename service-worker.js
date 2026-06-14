@@ -1,4 +1,4 @@
-const CACHE = 'mylibrary-v4';
+const CACHE = 'mylibrary-v5';
 
 const PRECACHE = [
   './',

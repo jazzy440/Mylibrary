@@ -1,5 +1,6 @@
 import { getBooks } from '../db.js';
 import { downloadBackup, pickAndImport } from '../backup.js';
+import { getApiKey, setApiKey } from '../api.js';
 
 let genreChart = null;
 let langChart  = null;
@@ -32,12 +33,51 @@ export function mount(container) {
         <button class="btn btn-ghost btn-full" id="import-btn">⬆ Importa</button>
       </div>
     </div>
+
+    <div class="chart-card" style="margin-bottom:32px">
+      <div class="chart-card-title">Ricerca libri</div>
+      <p style="font-size:.82rem;color:var(--text-2);line-height:1.5;margin-bottom:10px">
+        Senza chiave API viene usato Open Library (gratuito ma con catalogo limitato).
+        Con una chiave Google Books gratuita la ricerca è molto più completa —
+        copre libri italiani, copertine e dati precisi.
+      </p>
+      <div id="api-key-status" style="font-size:.8rem;margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="api-key-input" type="text"
+          placeholder="Incolla qui la tua chiave API (AIza…)"
+          value="${esc(getApiKey())}"
+          style="flex:1;font-size:.82rem;font-family:monospace">
+        <button class="btn btn-primary" id="api-key-save" style="flex-shrink:0">Salva</button>
+      </div>
+      <p style="font-size:.75rem;color:var(--text-2);margin-top:10px;line-height:1.5">
+        <strong style="color:var(--text-1)">Come ottenere la chiave gratuita (5 minuti):</strong><br>
+        1. Vai su <strong>console.cloud.google.com</strong> e accedi con il tuo account Google<br>
+        2. Crea un nuovo progetto (es. "MyLibrary")<br>
+        3. Menu → API e servizi → Libreria → cerca "Books API" → Abilita<br>
+        4. Menu → Credenziali → Crea credenziali → Chiave API<br>
+        5. (Consigliato) Limita la chiave ai referrer: <em>jazzy440.github.io/*</em><br>
+        6. Copia la chiave e incollala qui sopra
+      </p>
+    </div>
   `;
 
   container.querySelector('#export-btn').addEventListener('click', downloadBackup);
   container.querySelector('#import-btn').addEventListener('click', () =>
     pickAndImport(() => mount(container))
   );
+
+  const keyInput  = container.querySelector('#api-key-input');
+  const keyStatus = container.querySelector('#api-key-status');
+  const keySave   = container.querySelector('#api-key-save');
+
+  updateKeyStatus(keyStatus);
+
+  keySave.addEventListener('click', () => {
+    setApiKey(keyInput.value);
+    updateKeyStatus(keyStatus);
+    keySave.textContent = '✓ Salvata';
+    setTimeout(() => { keySave.textContent = 'Salva'; }, 1800);
+  });
 
   if (!books.length) return;
 
@@ -46,6 +86,15 @@ export function mount(container) {
 
   genreChart = makeChart('chart-genre', countBy(books, 'genre'));
   langChart  = makeChart('chart-lang',  countBy(books, 'language'));
+}
+
+function updateKeyStatus(el) {
+  const key = getApiKey();
+  if (key) {
+    el.innerHTML = `<span style="color:var(--success)">✓ Google Books attivo</span>`;
+  } else {
+    el.innerHTML = `<span style="color:var(--text-2)">Open Library (predefinito)</span>`;
+  }
 }
 
 function summaryHTML(books) {
@@ -131,4 +180,8 @@ function makeChart(canvasId, entries) {
       },
     },
   });
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
