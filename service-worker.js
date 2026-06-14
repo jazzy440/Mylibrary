@@ -1,4 +1,4 @@
-const CACHE = 'mylibrary-v6';
+const CACHE = 'mylibrary-v7';
 
 const PRECACHE = [
   './',
@@ -24,6 +24,8 @@ const PRECACHE = [
   './icons/icon-maskable.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './screenshots/screen-library.png',
+  './screenshots/screen-stats.png',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js',
   'https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js',
 ];

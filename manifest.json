@@ -13,6 +13,7 @@
   "orientation": "portrait-primary",
   "lang": "it",
   "categories": ["books", "productivity", "lifestyle"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./icons/icon-192.png",
@@ -24,7 +25,7 @@
       "src": "./icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "./icons/icon.svg",
@@ -37,6 +38,22 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshots/screen-library.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "La mia libreria — lista dei libri"
+    },
+    {
+      "src": "./screenshots/screen-stats.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Statistiche di lettura"
     }
   ]
 }
